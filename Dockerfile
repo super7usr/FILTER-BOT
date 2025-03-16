@@ -4,7 +4,7 @@
 
 FROM python:3.10.8-slim-buster
 
-RUN apt update && apt upgrade -y
+RUN apt-get update -qq && apt-get -y install ffmpeg
 RUN apt install git -y
 COPY requirements.txt /requirements.txt
 
