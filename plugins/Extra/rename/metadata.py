@@ -1,31 +1,16 @@
 import os, time, asyncio, subprocess, json
 
 def metadata_text(metadata_text):
-    author = None
-    title = None
-    video_title = None
-    audio_title = None
-    subtitle_title = None
-
-    flags = [i.strip() for i in metadata_text.split('--')]
-    for f in flags:
-        if "change-author" in f:
-            author = f[len("change-author"):].strip()
-        if "change-title" in f:
-            title = f[len("change-title"):].strip()
-        if "change-video-title" in f:
-            video_title = f[len("change-video-title"):].strip()
-        if "change-audio-title" in f:
-            audio_title = f[len("change-audio-title"):].strip()
-        if "change-subtitle-title" in f:
-            subtitle_title = f[len("change-subtitle-title"):].strip()
+    author = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
+    title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
+    video_title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
+    audio_title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
+    subtitle_title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
 
     return author, title, video_title, audio_title, subtitle_title
 
 def change_metadata(input_file):
     author, title, video_title, audio_title, subtitle_title = metadata_text(metadata)
-    metadata = "--change-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-video-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-audio-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-subtitle-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁"
-
     output_file = f'Metadata/{new_filename}'
     # Get the video metadata
     output = subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', input_file])
