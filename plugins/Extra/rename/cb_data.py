@@ -9,6 +9,7 @@ from pyrogram.types import (  InlineKeyboardButton, InlineKeyboardMarkup,ForceRe
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 from database.users_chats_db import db
+from plugins.Extra.rename.metadata import change_metadata
 import os 
 import humanize
 from PIL import Image
@@ -60,11 +61,8 @@ async def doc(bot, update):
         filesize = humanize.naturalsize(media.file_size) 
         c_caption = await db.get_caption(update.message.chat.id)
         c_thumb = await db.get_thumbnail(update.message.chat.id)
-	metadata_path = f'Metadata/{new_filename}'
-	metadata = "--change-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-video-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-audio-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-subtitle-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-author ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁"    #  . .    .   
-	await ms.edit("I Fᴏᴜɴᴅ Yᴏᴜʀ Mᴇᴛᴀᴅᴀᴛᴀ\n\n__**Pʟᴇᴀsᴇ Wᴀɪᴛ...**__\n**Aᴅᴅɪɴɢ Mᴇᴛᴀᴅᴀᴛᴀ Tᴏ Fɪʟᴇ....**")  
-	    
-	if change_metadata(file_path, metadata_path, metadata):  
+	
+	if change_metadata(file_path):  
 	    await ms.edit("Metadata Added.....")
 	    print("Metadata Added.....")
             await ms.edit("**Metadata added to the file successfully ✅**\n\n**Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....**")
