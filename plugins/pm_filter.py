@@ -2113,7 +2113,19 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-    
+
+    elif query.data == "prime_txt":
+        btn = [
+            [InlineKeyboardButton("ꜱᴇɴᴅ ᴘᴀʏᴍᴇɴᴛ ʀᴇᴄᴇɪᴘᴛ 🧾", url=OWNER_LNK)],
+            [InlineKeyboardButton("⚠️ ᴄʟᴏsᴇ / ᴅᴇʟᴇᴛᴇ ⚠️", callback_data="close_data")]
+        ]
+        reply_markup = InlineKeyboardMarkup(btn)
+        await query.message.reply_photo(
+            photo=PAYMENT_QR,
+            caption=PAYMENT_TEXT,
+            reply_markup=reply_markup
+        )
+        
     elif query.data == "extra":
         buttons = [[
             InlineKeyboardButton('⟸ Bᴀᴄᴋ', callback_data='admin')
