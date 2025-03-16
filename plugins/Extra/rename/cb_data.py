@@ -46,6 +46,18 @@ async def doc(bot, update):
         dow_file_name = splitpath[1]
         old_file_name = f"downloads/{dow_file_name}"
         os.rename(old_file_name, file_path)
+	metadata_mode = True
+        if (metadata_mode): 
+	    metadata = "--change-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-video-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-audio-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-subtitle-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-author ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁"    #  . .    .                
+            if metadata:
+                await ms.edit("I Fᴏᴜɴᴅ Yᴏᴜʀ Mᴇᴛᴀᴅᴀᴛᴀ\n\n__**Pʟᴇᴀsᴇ Wᴀɪᴛ...**__\n**Aᴅᴅɪɴɢ Mᴇᴛᴀᴅᴀᴛᴀ Tᴏ Fɪʟᴇ....**")            
+                if change_metadata(dl_path, metadata_path, metadata):            
+                    await ms.edit("Metadata Added.....")
+                    print("Metadata Added.....")
+            await ms.edit("**Metadata added to the file successfully ✅**\n\n**Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....**")
+        else:
+            await ms.edit("`Try To Uploading....`")
+	    
         duration = 0
         try:
             metadata = extractMetadata(createParser(file_path))
