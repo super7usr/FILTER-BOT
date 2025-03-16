@@ -46,7 +46,7 @@ async def doc(bot, update):
         dow_file_name = splitpath[1]
         old_file_name = f"downloads/{dow_file_name}"
         os.rename(old_file_name, file_path)
-	metadata_mode = True
+	metadata_mode = 'True'
         if (metadata_mode): 
 	    metadata = "--change-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-video-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-audio-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-subtitle-title ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁\n--change-author ❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁"    #  . .    .                
             if metadata:
