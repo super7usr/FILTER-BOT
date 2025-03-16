@@ -61,12 +61,13 @@ async def doc(bot, update):
         filesize = humanize.naturalsize(media.file_size) 
         c_caption = await db.get_caption(update.message.chat.id)
         c_thumb = await db.get_thumbnail(update.message.chat.id)
+
+		try:
+			if change_metadata(file_path):  
+				await ms.edit("Metadata Added.....")
+				print("Metadata Added.....")
+				await ms.edit("**Metadata added to the file successfully ✅**\n\n**Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....**")
 	
-	if change_metadata(file_path):  
-	    await ms.edit("Metadata Added.....")
-	    print("Metadata Added.....")
-            await ms.edit("**Metadata added to the file successfully ✅**\n\n**Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....**")
-	       
         if c_caption:
              try:
                  caption = c_caption.format(filename=new_filename, filesize=humanize.naturalsize(media.file_size), duration=convert(duration))
