@@ -1,6 +1,6 @@
 import os, time, asyncio, subprocess, json
 
-def metadata_text(metadata_text):
+def metadata_text():
     author = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
     title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
     video_title = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
@@ -10,7 +10,7 @@ def metadata_text(metadata_text):
     return author, title, video_title, audio_title, subtitle_title
 
 def change_metadata(input_file):
-    author, title, video_title, audio_title, subtitle_title = metadata_text(metadata)
+    author, title, video_title, audio_title, subtitle_title = metadata_text()
     output_file = f'Metadata/{new_filename}'
     # Get the video metadata
     output = subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', input_file])
