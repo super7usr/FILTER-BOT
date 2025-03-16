@@ -29,7 +29,7 @@ async def doc(bot, update):
     try:
         type = update.data.split("_")[1]
         new_name = update.message.text
-        new_filename = new_name.split(":-")[1]
+        new_filename = new_name.split(":- ")[1]
         file = update.message.reply_to_message
         file_path = f"downloads/{new_filename}"
         ms = await update.message.edit("⚠️__**Please wait...**__\n\n__Downloading file to my server...__")
