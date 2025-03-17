@@ -22,9 +22,9 @@ marshmallow==3.14.1
 umongo==3.0.1 
 PyLeaves==1.0.2
 opencv-python-headless==4.7.0.68 
-googletrans==3.1.0a0 
+
 python-dotenv==0.21.1 
-gTTS==2.3.1 
+
 speedtest==0.0.1 
 humanize==4.6.0 
 Pillow==9.4.0 
