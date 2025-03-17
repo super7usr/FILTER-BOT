@@ -11,7 +11,7 @@ from hachoir.parser import createParser
 from database.users_chats_db import db
 from plugins.Extra.rename.metadata import change_metadata
 import os 
-import humanize
+import humanize, subprocess, json, requests
 from PIL import Image
 import time
 import logging
