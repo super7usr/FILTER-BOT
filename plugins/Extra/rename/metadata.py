@@ -11,7 +11,7 @@ def metadata_text():
 
 def change_metadata(input_file):
     author, title, video_title, audio_title, subtitle_title = metadata_text()
-    output_file = f'Metadata/{new_filename}'
+    output_file = f'Metadata/{input_file}'
     # Get the video metadata
     output = subprocess.check_output(['ffprobe', '-v', 'error', '-show_streams', '-print_format', 'json', input_file])
     data = json.loads(output)
