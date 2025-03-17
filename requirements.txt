@@ -4,7 +4,7 @@ requests
 bs4 
 shortzy 
 pytz 
-aiohttp
+aiohttp[speedups]
 jinja2
 apscheduler
 pyshorteners
@@ -22,9 +22,8 @@ marshmallow==3.14.1
 umongo==3.0.1 
 PyLeaves==1.0.2
 opencv-python-headless==4.7.0.68 
-
+aiodns
 python-dotenv==0.21.1 
-
 speedtest==0.0.1 
 humanize==4.6.0 
 Pillow==9.4.0 
@@ -33,3 +32,4 @@ dnspython==2.3.0
 git+https://github.com/Joelkb/cinemagoer
 ffmpeg-python
 ffmpeg
+Brotli
