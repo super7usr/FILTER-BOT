@@ -1,4 +1,16 @@
 import os, time, asyncio, subprocess, json, requests
+import subprocess
+
+def check_ffprobe():
+    try:
+        subprocess.run(["ffprobe", "-version"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print("ffprobe is installed and accessible.")
+    except subprocess.CalledProcessError as e:
+        print("ffprobe is not installed or not accessible.")
+        print("Error:", e)
+        # Handle the error or provide instructions to install ffprobe
+        print("Please install ffprobe by following the instructions at https://ffmpeg.org/download.html")
+
 
 def metadata_text():
     author = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
@@ -10,6 +22,7 @@ def metadata_text():
     return author, title, video_title, audio_title, subtitle_title
 
 def change_metadata(input_file):
+    check_ffprobe()
     author, title, video_title, audio_title, subtitle_title = metadata_text()
     output_file = f'Metadata/{input_file}'
     # Get the video metadata
