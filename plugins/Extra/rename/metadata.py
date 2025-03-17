@@ -1,4 +1,4 @@
-import os, time, asyncio, subprocess, json
+import os, time, asyncio, subprocess, json, requests
 
 def metadata_text():
     author = '❁✗❍═❰ 🆁︎🅴︎🅽︎🅸︎🆂︎🅷︎ ❱═❍✗❁'
