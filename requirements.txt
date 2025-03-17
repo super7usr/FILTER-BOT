@@ -4,6 +4,7 @@ requests
 bs4 
 shortzy 
 pytz 
+aiohttp
 aiohttp[speedups]
 jinja2
 apscheduler
