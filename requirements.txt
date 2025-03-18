@@ -1,4 +1,5 @@
 pyrofork==2.3.45
+pyrogram==2.0.93
 tgcrypto 
 requests 
 bs4 
