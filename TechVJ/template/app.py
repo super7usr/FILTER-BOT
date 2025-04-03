@@ -1,12 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
 import asyncio
-import aiohttp
-import aiohttp import web
+from aiohttp import web
 from cinemagoer import Cinemagoer
 import humanize
 import secrets
+import json
 
-app = web.RouteTableDef()
 ia = Cinemagoer()
 links = {}  # Store file details and short codes
 ads = ["Your Ad Here 1", "Your Ad Here 2", "Your Ad Here 3"]  # Example ads
@@ -22,12 +20,14 @@ async def get_imdb_data(search_query):
 def generate_short_code():
     return secrets.token_urlsafe(6)
 
-@app.route('/', methods=['GET', 'POST'])
-async def index():
+async def index(request):
     if request.method == 'POST':
-        search_query = request.form['search_query']
-        files_data = request.form['files_data']  # Assuming JSON string of files
-        files = eval(files_data) #eval is dangerous, but used here for simplicity. Replace with proper JSON parsing in production.
+        data = await request.post()
+        search_query = data['search_query']
+        try:
+            files = json.loads(data['files_data'])  # Use json.loads instead of eval
+        except json.JSONDecodeError:
+            return web.Response(text="Invalid files_data", status=400)
 
         imdb_data = await get_imdb_data(search_query)
 
@@ -39,20 +39,42 @@ async def index():
         for file in files:
             short_code = generate_short_code()
             links[short_code] = file
-            short_url = url_for('file_redirect', short_code=short_code, _external=True)
+            short_url = str(request.url.join(request.app.router['file_redirect'].url_for(short_code=short_code)))
             cap += f"📁 <a href='{short_url}'>[{humanize.naturalsize(file['file_size'])}] {file['file_name']}</a>\n"
 
         cap += f"\n{secrets.choice(ads)}"
 
-        return render_template('results.html', caption=cap)
+        return web.Response(text=cap, content_type='text/html')
 
-    return render_template('search.html')
+    return web.Response(text="""
+    <!DOCTYPE html>
+    <html>
+    <head><title>Movie Search</title></head>
+    <body>
+        <form method="POST">
+            Search: <input type="text" name="search_query"><br>
+            Files (JSON): <textarea name="files_data"></textarea><br>
+            <input type="submit" value="Search">
+        </form>
+    </body>
+    </html>
+    """, content_type='text/html')
 
-@app.route('/file/<short_code>')
-def file_redirect(short_code):
+async def file_redirect(request):
+    short_code = request.match_info['short_code']
     file_data = links.get(short_code)
     if file_data:
         # In a real app, you'd serve the file or redirect to its download location.
-        return f"Downloading: {file_data['file_name']}. Size: {humanize.naturalsize(file_data['file_size'])}" #Replace with actual file serving logic
+        return web.Response(text=f"Downloading: {file_data['file_name']}. Size: {humanize.naturalsize(file_data['file_size'])}") #Replace with actual file serving logic
     else:
-        return "File not found", 404
+        return web.Response(text="File not found", status=404)
+
+async def main():
+    app = web.Application()
+    app.router.add_get('/', index)
+    app.router.add_post('/', index)
+    app.router.add_get('/file/{short_code}', file_redirect, name='file_redirect')
+    return app
+
+if __name__ == '__main__':
+    web.run_app(asyncio.run(main()))
