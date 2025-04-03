@@ -19,26 +19,22 @@ async def get_imdb_data(search_query):
         return movie
     return None
 
-async def get_cap(settings, remaining_seconds, files, query, total_results, search):
-    if settings.get("imdb"):
-        imdb_cap = query.get("IMDB_CAP") #assuming query object has IMDB_CAP.
-        if imdb_cap:
-            cap = imdb_cap
-        else:
-            imdb = await get_imdb_data(search) if settings.get("imdb") else None
-            if imdb:
-                TEMPLATE = """<b>{title} ({year})</b>\n\n{plot}\n\n""" #using a simple template for web.
-                cap = TEMPLATE.format(
-                    title=imdb.get('title'),
-                    year=imdb.get('year'),
-                    plot=imdb.get('plot')[0] if imdb.get('plot') else ''
-                )
-            else:
-                cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search}\n\nʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {remaining_seconds} sᴇᴄᴏɴᴅs\n\n</b>"
-        cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
+async def get_cap(files, query, search):
+    imdb_cap = query.get("IMDB_CAP") #assuming query object has IMDB_CAP.
+    if imdb_cap:
+        cap = imdb_cap
     else:
-        cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search}\n\nʀᴇsᴜʟᴛ sʜᴏᴡ ɪɴ ☞ {remaining_seconds} sᴇᴄᴏɴᴅs\n\n</b>"
-        cap += "<b><u>🍿 Your Movie Files 👇</u></b>\n\n"
+        imdb = await get_imdb_data(search)
+        if imdb:
+            TEMPLATE = """<b>{title} ({year})</b>\n\n{plot}\n\n""" #using a simple template for web.
+            cap = TEMPLATE.format(
+                title=imdb.get('title'),
+                year=imdb.get('year'),
+                plot=imdb.get('plot')[0] if imdb.get('plot') else ''
+            )
+        else:
+            cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search}\n\n</b>"
+    cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
 
     for file in files:
         file_name = ' '.join(filter(lambda x: not x.startswith(('[', '@', 'www.')), file['file_name'].split()))
@@ -56,8 +52,7 @@ async def movie_search(request):
 
     if imdb_data:
         files = [{"file_id": secrets.token_hex(8), "file_name": "example.mp4", "file_size": 1024 * 1024}] #example file list.
-        cap = await get_cap({"imdb": True}, 60, files, request.query, 1, search_query)
+        cap = await get_cap(files, request.query, search_query)
         return web.Response(text=cap, content_type='text/html')
     else:
         return web.Response(text=f"No movie found with the name '{search_query}'. It might not be released or added yet.", content_type='text/html')
-
