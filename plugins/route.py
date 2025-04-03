@@ -16,8 +16,55 @@ from TechVJ.util.render_template import render_page
 routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
-async def root_route_handler(request):
-    return web.json_response("BenFilterBot")
+@routes.post("/")
+async def index(request):
+    if request.method == 'POST':
+        data = await request.post()
+        search_query = data['search_query']
+        try:
+            files = json.loads(data['files_data'])  # Use json.loads instead of eval
+        except json.JSONDecodeError:
+            return web.Response(text="Invalid files_data", status=400)
+
+        imdb_data = await get_imdb_data(search_query)
+
+        if imdb_data:
+            cap = f"<b>{imdb_data['title']} ({imdb_data['year']})</b>\n\n{imdb_data.get('plot')[0] if imdb_data.get('plot') else ''}\n\n"
+        else:
+            cap = f"<b>Results for {search_query}</b>\n\n"
+
+        for file in files:
+            links[file['file_name']] = file #Store file data by file name instead of short code.
+            cap += f"📁 <a href='/file/{file['file_name']}'>[{humanize.naturalsize(file['file_size'])}] {file['file_name']}</a>\n"
+
+        cap += f"\n{secrets.choice(ads)}"
+
+        return web.Response(text=cap, content_type='text/html')
+
+    return web.Response(text="""
+    <!DOCTYPE html>
+    <html>
+    <head><title>Movie Search</title></head>
+    <body>
+        <form method="POST">
+            Search: <input type="text" name="search_query"><br>
+            Files (JSON): <textarea name="files_data"></textarea><br>
+            <input type="submit" value="Search">
+        </form>
+    </body>
+    </html>
+    """, content_type='text/html')
+
+@routes.get('/file/{file_name}')
+async def file_redirect(request):
+    file_name = request.match_info['file_name']
+    file_data = links.get(file_name)
+    if file_data:
+        # In a real app, you'd serve the file or redirect to its download location.
+        return web.Response(text=f"Downloading: {file_data['file_name']}. Size: {humanize.naturalsize(file_data['file_size'])}") #Replace with actual file serving logic
+    else:
+        return web.Response(text="File not found", status=404)
+
 
 @routes.get(r"/watch/{path:\S+}", allow_head=True)
 async def stream_handler(request: web.Request):
