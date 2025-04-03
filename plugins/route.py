@@ -12,9 +12,23 @@ from TechVJ import StartTime, __version__
 from TechVJ.util.custom_dl import ByteStreamer
 from TechVJ.util.time_format import get_readable_time
 from TechVJ.util.render_template import render_page
+from cinemagoer import Cinemagoer
+
+routes = web.RouteTableDef()
+ia = Cinemagoer()
+links = {}  # Store file details (no short codes)
+ads = ["Your Ad Here 1", "Your Ad Here 2", "Your Ad Here 3"]  # Example ads
 
 routes = web.RouteTableDef()
 
+async def get_imdb_data(search_query):
+    loop = asyncio.get_event_loop()
+    movie = await loop.run_in_executor(None, ia.search_movie, search_query)
+    if movie:
+        movie = await loop.run_in_executor(None, ia.get_movie, movie[0].movieID)
+        return movie
+    return None
+    
 @routes.get("/", allow_head=True)
 @routes.post("/")
 async def index(request):
