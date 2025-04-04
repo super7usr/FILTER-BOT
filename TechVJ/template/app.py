@@ -7,6 +7,11 @@ from database.ia_filterdb import get_all_search_results
 
 routes = web.RouteTableDef()
 
+async def get_file_details(file_id):
+*Placeholder for the actual implementation of get_file_details*
+*This function should return a dictionary with 'file_name' and 'file_size'*
+    pass
+
 async def get_cap(file_ids, search_query):
     cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search_query}\n\n</b>"
     cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
@@ -15,9 +20,13 @@ async def get_cap(file_ids, search_query):
         file_details = await get_file_details(file_id)  # Assuming you have get_file_details
         if file_details:
             file_name = " ".join(
-                filter(lambda x: not x.startswith(("[", "@", "www.")), file_details["file_name"].split())
+                filter(lambda x: not x.startswith(("[", "@", "www.")), file_details.get("file_name", "").split())
             )
-            cap += f"<b>📁 <a href='https://telegram.me/{temp['U_NAME']}?start=files_{file_id}'>[{humanize.naturalsize(file_details['file_size'])}] {file_name}\n\n</a></b>"
+            file_size = file_details.get("file_size")
+            if file_size is not None:
+                cap += f"<b>📁 <a href='https://telegram.me/{temp['U_NAME']}?start=files_{file_id}'>[{humanize.naturalsize(file_size)}] {file_name}\n\n</a></b>"
+            else:
+                cap += f"<b>📁 File size not available for ID {file_id}.\n\n</b>"
         else:
             cap += f"<b>📁 File with ID {file_id} not found.\n\n</b>"
 
@@ -29,10 +38,13 @@ async def movie_search(request):
     if not search_query:
         return web.Response(text="Please provide a movie query using '?q=movie_name'", status=400)
 
-    db_data = await get_all_search_results(search_query)
+    try:
+        db_data = await get_all_search_results(search_query)
+    except Exception as e:
+        return web.Response(text=f"An error occurred while searching: {str(e)}", status=500)
 
     if db_data:  # Check if db_data is not empty
-        file_ids = [item["file_id"] for item in db_data] #Extract file_ids from db_data
+        file_ids = [item["file_id"] for item in db_data]  # Extract file_ids from db_data
         cap = await get_cap(file_ids, search_query)
         return web.Response(text=cap, content_type="text/html")
     else:
