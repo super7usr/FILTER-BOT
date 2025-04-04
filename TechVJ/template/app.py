@@ -25,7 +25,7 @@ async def get_cap(file_ids, search):
     cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
 
     for file_id in file_ids:
-        file_details = await database.get_file_details(file_id)
+        file_details = await get_file_details(file_id)
         if file_details:
             file_name = " ".join(
                 filter(lambda x: not x.startswith(("[", "@", "www.")), file_details["file_name"].split())
