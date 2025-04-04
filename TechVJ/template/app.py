@@ -5,10 +5,10 @@ import humanize
 import secrets
 import json
 from utils import temp
-from database.ia_filterdb import get_search_results
+from database.ia_filterdb import get_search_results as get_file_ids_from_imdb_search
+import os
 
 ia = Cinemagoer()
-ads = ["Your Ad Here 1", "Your Ad Here 2", "Your Ad Here 3"]  # Example ads
 
 routes = web.RouteTableDef()
 
@@ -20,28 +20,19 @@ async def get_imdb_data(search_query):
         return movie
     return None
 
-async def get_cap(files, query, search):
-    imdb_cap = query.get("IMDB_CAP")  # Assuming query object has IMDB_CAP.
-    if imdb_cap:
-        cap = imdb_cap
-    else:
-        imdb = await get_imdb_data(search)
-        if imdb:
-            TEMPLATE = "<b>{title} ({year})</b>\n\n{plot}\n\n"  # Simple template for web.
-            cap = TEMPLATE.format(
-                title=imdb.get("title"),
-                year=imdb.get("year"),
-                plot=imdb.get("plot")[0] if imdb.get("plot") else "",
-            )
-        else:
-            cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search}\n\n</b>"
+async def get_cap(file_ids, search):
+    cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search}\n\n</b>"
     cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
 
-    for file in files:
-        file_name = " ".join(
-            filter(lambda x: not x.startswith(("[", "@", "www.")), file["file_name"].split())
-        )
-        cap += f"<b>📁 <a href='https://telegram.me/{temp['U_NAME']}?start=files_{file['file_id']}'>[{humanize.naturalsize(file['file_size'])}] {file_name}\n\n</a></b>"
+    for file_id in file_ids:
+        file_details = await database.get_file_details(file_id)
+        if file_details:
+            file_name = " ".join(
+                filter(lambda x: not x.startswith(("[", "@", "www.")), file_details["file_name"].split())
+            )
+            cap += f"<b>📁 <a href='https://telegram.me/{temp['U_NAME']}?start=files_{file_id}'>[{humanize.naturalsize(file_details['file_size'])}] {file_name}\n\n</a></b>"
+        else:
+            cap += f"<b>📁 File with ID {file_id} not found.\n\n</b>"
 
     return cap
 
@@ -54,18 +45,25 @@ async def movie_search(request):
     imdb_data = await get_imdb_data(search_query)
 
     if imdb_data:
-        # Assuming you want to use database results here.
-        files, offset, total_results = await get_search_results(
-            request.query.get("chat_id"),  # You'll need to pass chat_id in the query
-            search_query,
-            offset=0,
-            filter=True,
-        )
-        cap = await get_cap(files, request.query, search_query)
-        return web.Response(text=cap, content_type="text/html")
+        file_ids = await get_file_ids_from_imdb_search(imdb_data["imdb_id"])
+
+        if file_ids:
+            cap = await get_cap(file_ids, search_query)
+            return web.Response(text=cap, content_type="text/html")
+        else:
+            return web.Response(text="No files found for this movie.", content_type="text/html")
+
     else:
         return web.Response(
             text=f"No movie found with the name '{search_query}'. It might not be released or added yet.",
             content_type="text/html",
         )
+
+@routes.get("/favicon.ico")
+async def favicon(request):
+    favicon_path = os.path.join(os.getcwd(), "favicon.ico")
+    try:
+        return web.FileResponse(favicon_path)
+    except FileNotFoundError:
+        return web.Response(status=404)
 
