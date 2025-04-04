@@ -5,7 +5,7 @@ import humanize
 import secrets
 import json
 from utils import temp
-from database.ia_filterdb import get_search_results as get_file_ids_from_imdb_search
+from database.ia_filterdb import get_search_results as get_file_ids_from_imdb_search, get_file_details
 import os
 
 ia = Cinemagoer()
