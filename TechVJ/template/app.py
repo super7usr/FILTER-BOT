@@ -1,31 +1,18 @@
 import asyncio
 from aiohttp import web
-from imdb import Cinemagoer
 import humanize
-import secrets
-import json
+import os
 from utils import temp
 from database.ia_filterdb import get_all_search_results
-import os
-
-ia = Cinemagoer()
 
 routes = web.RouteTableDef()
-
-async def get_imdb_data(search_query):
-    loop = asyncio.get_event_loop()
-    movie = await loop.run_in_executor(None, ia.search_movie, search_query)
-    if movie:
-        movie = await loop.run_in_executor(None, ia.get_movie, movie[0].movieID)
-        return movie
-    return None
 
 async def get_cap(file_ids, search_query):
     cap = f"<b>Tʜᴇ Rᴇꜱᴜʟᴛꜱ Fᴏʀ ☞ {search_query}\n\n</b>"
     cap += "<b>\n\n<u>🍿 Your Movie Files 👇</u></b>\n\n"
 
     for file_id in file_ids:
-        file_details = await get_file_details(file_id)
+        file_details = await get_file_details(file_id)  # Assuming you have get_file_details
         if file_details:
             file_name = " ".join(
                 filter(lambda x: not x.startswith(("[", "@", "www.")), file_details["file_name"].split())
@@ -44,7 +31,8 @@ async def movie_search(request):
 
     db_data = await get_all_search_results(search_query)
 
-    if file_ids:
+    if db_data:  # Check if db_data is not empty
+        file_ids = [item["file_id"] for item in db_data] #Extract file_ids from db_data
         cap = await get_cap(file_ids, search_query)
         return web.Response(text=cap, content_type="text/html")
     else:
@@ -60,4 +48,3 @@ async def favicon(request):
         return web.FileResponse(favicon_path)
     except FileNotFoundError:
         return web.Response(status=404)
-
