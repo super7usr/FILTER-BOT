@@ -5,7 +5,7 @@ import humanize
 import secrets
 import json
 from utils import temp
-
+from database.ia_filterdb import get_search_results
 ia = Cinemagoer()
 ads = ["Your Ad Here 1", "Your Ad Here 2", "Your Ad Here 3"]  # Example ads
 
