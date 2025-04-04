@@ -1,7 +1,3 @@
-# Don't Remove Credit @VJ_Botz
-# Subscribe YouTube Channel For Amazing Bot @Tech_VJ
-# Ask Doubt on telegram @KingVJ01
-
 import re, math, logging, secrets, mimetypes, time, json
 from info import *
 from aiohttp import web
@@ -63,6 +59,7 @@ async def index(request):
         <form method="POST">
             Search: <input type="text" name="search_query"><br>
             <input type="submit" value="Search">
+            <a href='https://telegram.me/'>{{search_query}}</a>
         </form>
     </body>
     </html>
