@@ -20,6 +20,7 @@ async def get_imdb_data(search_query):
     return None
 
 async def get_cap(files, query, search):
+    files, offset, total_results = await get_search_results(message.chat.id ,search, offset=0, filter=True)
     imdb_cap = query.get("IMDB_CAP") #assuming query object has IMDB_CAP.
     if imdb_cap:
         cap = imdb_cap
