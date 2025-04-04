@@ -2,7 +2,7 @@
 # Subscribe YouTube Channel For Amazing Bot @Tech_VJ
 # Ask Doubt on telegram @KingVJ01
 
-import re, math, logging, secrets, mimetypes, time
+import re, math, logging, secrets, mimetypes, time, json
 from info import *
 from aiohttp import web
 from aiohttp.http_exceptions import BadStatusLine
@@ -62,7 +62,6 @@ async def index(request):
     <body>
         <form method="POST">
             Search: <input type="text" name="search_query"><br>
-            Files (JSON): <textarea name="files_data"></textarea><br>
             <input type="submit" value="Search">
         </form>
     </body>
